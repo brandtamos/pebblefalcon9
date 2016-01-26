@@ -1,0 +1,33 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "evanmbrandt@gmail.com",
+    "longName": "Falcon 9",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/falcon9_chalk.png",
+                "name": "WATCHFACE_IMAGE",
+                "targetPlatforms": [
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Falcon 9",
+    "targetPlatforms": [
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "16dc3e06-ff02-430c-9afe-82b78ee1a248",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
