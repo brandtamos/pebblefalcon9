@@ -12,6 +12,14 @@ static const GPathInfo FLAME_TRIANGLE_PATH_INFO = {
   .num_points = 3,
   .points = (GPoint []) {{84, 144}, {92, 170}, {100, 144}}
 };
+static const GPathInfo MED_FLAME_TRIANGLE_PATH_INFO = {
+  .num_points = 3,
+  .points = (GPoint []) {{86, 140}, {92, 162}, {98, 140}}
+};
+static const GPathInfo SMALL_FLAME_TRIANGLE_PATH_INFO = {
+  .num_points = 3,
+  .points = (GPoint []) {{88, 140}, {92, 162}, {96, 140}}
+};
 static void update_time() {
   // Get a tm structure
   time_t temp = time(NULL);
@@ -29,6 +37,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time();
 }
 static void draw_for_round(Layer *layer, GContext *ctx){
+  BatteryChargeState charge_state = battery_state_service_peek();
   //draw top gray segment
   graphics_context_set_fill_color(ctx, GColorLightGray); 
   graphics_fill_rect(ctx, GRect(85, 10, 15, 40), 4, GCornersTop);
@@ -49,10 +58,25 @@ static void draw_for_round(Layer *layer, GContext *ctx){
   
   //draw flame
   graphics_context_set_fill_color(ctx, GColorOrange); 
-  graphics_fill_circle(ctx, GPoint(92, 140), 8);
-  s_flame_triangle_path = gpath_create(&FLAME_TRIANGLE_PATH_INFO);
-  gpath_draw_filled(ctx, s_flame_triangle_path);
   
+  if(charge_state.charge_percent > 75){
+    graphics_fill_circle(ctx, GPoint(92, 140), 8);
+    s_flame_triangle_path = gpath_create(&FLAME_TRIANGLE_PATH_INFO);
+    gpath_draw_filled(ctx, s_flame_triangle_path);
+  }
+  else if(charge_state.charge_percent > 50){
+    graphics_fill_circle(ctx, GPoint(92, 140), 4);
+    s_flame_triangle_path = gpath_create(&MED_FLAME_TRIANGLE_PATH_INFO);
+    gpath_draw_filled(ctx, s_flame_triangle_path);
+  }
+  else if(charge_state.charge_percent > 25){
+    graphics_fill_circle(ctx, GPoint(92, 140), 3);
+    s_flame_triangle_path = gpath_create(&SMALL_FLAME_TRIANGLE_PATH_INFO);
+    gpath_draw_filled(ctx, s_flame_triangle_path);
+  }
+  else{
+    //draw no flame
+  }
   //draw leg outline
   graphics_context_set_fill_color(ctx, GColorWhite); 
   s_white_triangle_path = gpath_create(&TRIANGLE_PATH_INFO);
@@ -72,6 +96,8 @@ static void draw_for_round(Layer *layer, GContext *ctx){
   graphics_draw_line(ctx, GPoint(92, 115), GPoint(92, 135));
 }
 static void draw_for_square(Layer *layer, GContext *ctx){
+  BatteryChargeState charge_state = battery_state_service_peek();
+  
   int square_offset = -20;
   //draw top gray segment
   graphics_context_set_fill_color(ctx, GColorLightGray); 
@@ -92,10 +118,28 @@ static void draw_for_square(Layer *layer, GContext *ctx){
   
   //draw flame
   graphics_context_set_fill_color(ctx, GColorOrange); 
-  graphics_fill_circle(ctx, GPoint(92 + square_offset, 140), 8);
-  s_flame_triangle_path = gpath_create(&FLAME_TRIANGLE_PATH_INFO);
-  gpath_move_to(s_flame_triangle_path, GPoint(square_offset, 0));
-  gpath_draw_filled(ctx, s_flame_triangle_path);
+  
+  if(charge_state.charge_percent > 75){
+    graphics_fill_circle(ctx, GPoint(92 + square_offset, 140), 8);
+    s_flame_triangle_path = gpath_create(&FLAME_TRIANGLE_PATH_INFO);
+    gpath_move_to(s_flame_triangle_path, GPoint(square_offset, 0));
+    gpath_draw_filled(ctx, s_flame_triangle_path);
+  }
+  else if(charge_state.charge_percent > 50){
+    graphics_fill_circle(ctx, GPoint(92 + square_offset, 140), 4);
+    s_flame_triangle_path = gpath_create(&MED_FLAME_TRIANGLE_PATH_INFO);
+    gpath_move_to(s_flame_triangle_path, GPoint(square_offset, 0));
+    gpath_draw_filled(ctx, s_flame_triangle_path);
+  }
+  else if(charge_state.charge_percent > 25){
+    graphics_fill_circle(ctx, GPoint(92 + square_offset, 140), 3);
+    s_flame_triangle_path = gpath_create(&SMALL_FLAME_TRIANGLE_PATH_INFO);
+    gpath_move_to(s_flame_triangle_path, GPoint(square_offset, 0));
+    gpath_draw_filled(ctx, s_flame_triangle_path);
+  }
+  else{
+    //draw no flame
+  }
   
   //draw leg outline
   graphics_context_set_fill_color(ctx, GColorWhite); 
